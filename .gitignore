@@ -54,3 +54,5 @@ dkms.conf
 /.vs/Masticore.Net/v15
 /packages/Newtonsoft.Json.10.0.3
 /bin/Debug
+/.vs
+/obj/Release

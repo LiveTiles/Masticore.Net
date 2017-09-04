@@ -26,44 +26,44 @@ namespace Masticore.Net.Http
             return new ApiClient(BaseAddress + path);   
         }
 
-        public async Task<JObject> GetAsync(string uri = "", string query = "")
+        public async Task<JObject> GetAsync(string request = "", string query = "")
         {
-            return await Client().GetAsync(uri, query);
+            return await Client().GetAsync(request, query);
         }
 
-        public async Task<string> GetStringAsync(string uri = "", string query = "")
+        public async Task<string> GetStringAsync(string request = "", string query = "")
         {
-            return await Client().GetStringAsync(uri, query);
+            return await Client().GetStringAsync(request, query);
         }
 
-        public async Task<JArray> GetArrayAsync(string uri = "", string query = "")
+        public async Task<JArray> GetArrayAsync(string request = "", string query = "")
         {
-            return await Client().GetArrayAsync(uri, query);
+            return await Client().GetArrayAsync(request, query);
         }
         
-        public async Task<JObject> PostAsync(string uri, JObject json)
+        public async Task<JObject> PostAsync(string request, JObject json)
         {
-            return await Client().PostAsync(uri, json);
+            return await Client().PostAsync(request, json);
         }
 
-        public async Task<JObject> PostAsync(string uri, string text)
+        public async Task<JObject> PostAsync(string request, string text)
         {
-            return await Client().PostAsync(uri, text);
+            return await Client().PostAsync(request, text);
         }
 
-        public async Task<JObject> PostAsync(string uri, HttpContent content)
+        public async Task<JObject> PostAsync(string request, HttpContent content)
         {
-            return await Client().PostAsync(uri, content);
+            return await Client().PostAsync(request, content);
         }
 
-        public async Task<JObject> PatchAsync(string uri, JObject json)
+        public async Task<JObject> PatchAsync(string request, JObject json)
         {
-            return await Client().PatchAsync(uri, json);
+            return await Client().PatchAsync(request, json);
         }
 
-        public async Task DeleteAsync(string uri)
+        public async Task DeleteAsync(string request)
         {
-            await Client().DeleteAsync(uri);
+            await Client().DeleteAsync(request);
         }
     }
 }

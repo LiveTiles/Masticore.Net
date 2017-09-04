@@ -12,7 +12,7 @@ namespace Masticore.Net.Http
 {
     public class ApiClient : HttpClient
     {
-        public ApiClient(string baseAddress = "")
+        public ApiClient(string baseAddress)
         {
             BaseAddress = new Uri(baseAddress);
         }
@@ -30,12 +30,12 @@ namespace Masticore.Net.Http
         //    return new HttpClient(BaseAddress);
         //}
         
-        string EscapeUriRequest(string uri)
+        string EscapeRequest(string request)
         {
-            //if (uri.Contains(":"))
-            //    return Uri.EscapeDataString(uri); //HACK: Graph use colon in request path
+            //if (request.Contains(":"))
+            //    return Uri.EscapeDataString(request); //HACK: Graph use colon in request path
             //else
-                return Uri.EscapeUriString(uri);
+            return Uri.EscapeDataString(request);
         }
 
         JObject GetJson(string value)
@@ -54,80 +54,80 @@ namespace Masticore.Net.Http
                 return JArray.Parse(value);
         }
 
-        public async Task<JObject> GetAsync(string uri = "", params string[] queryParams)
+        public async Task<JObject> GetAsync(string request = "", params string[] queryParams)
         {
-            return GetJson(await GetStringAsync(uri, queryParams));
+            return GetJson(await GetStringAsync(request, queryParams));
         }
 
-        public async Task<JArray> GetArrayAsync(string uri = "", params string[] queryParams)
+        public async Task<JArray> GetArrayAsync(string request = "", params string[] queryParams)
         {
-            return GetJsonArray(await GetStringAsync(uri, queryParams));
+            return GetJsonArray(await GetStringAsync(request, queryParams));
         }
 
-        public async Task<string> GetStringAsync(string uri = "", params string[] queryParams)
+        public async Task<string> GetStringAsync(string request = "", params string[] queryParams)
         {
             HttpResponseMessage response;
             var query = string.Join("&", queryParams);
             if (string.IsNullOrEmpty(query))
-                response = await Client().GetAsync(EscapeUriRequest(uri));
+                response = await Client().GetAsync(EscapeRequest(request));
             else
-                response = await Client().GetAsync(EscapeUriRequest(uri) + $"?{query}");
+                response = await Client().GetAsync(EscapeRequest(request) + $"?{query}");
 
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
         
-        public async Task<JObject> PostAsync(string uri, JObject json)
+        public async Task<JObject> PostAsync(string request, JObject json)
         {
-            return await PostAsync(uri, new JsonContent(json));
+            return await PostAsync(request, new JsonContent(json));
         }
 
-        public async Task<JObject> PostAsync(string uri, object value)
+        public async Task<JObject> PostAsync(string request, object value)
         {
-            return await PostAsync(uri, new JsonContent(value));
+            return await PostAsync(request, new JsonContent(value));
         }
 
-        public async Task<JObject> PostAsync(string uri, string text)
+        public async Task<JObject> PostAsync(string request, string text)
         {
-            return await PostAsync(uri, new StringContent(text));
+            return await PostAsync(request, new StringContent(text));
         }
 
-        public new async Task<JObject> PostAsync(string uri, HttpContent content)
+        public new async Task<JObject> PostAsync(string request, HttpContent content)
         {
-            var response = await Client().PostAsync(EscapeUriRequest(uri), content);
+            var response = await Client().PostAsync(EscapeRequest(request), content);
             response.EnsureSuccessStatusCode();
             return GetJson(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task<JObject> PostAsync(string uri)
+        public async Task<JObject> PostAsync(string request)
         {
-            var response = await Client().PostAsync(EscapeUriRequest(uri), null);
+            var response = await Client().PostAsync(EscapeRequest(request), null);
             response.EnsureSuccessStatusCode();
             return GetJson(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task<JObject> PutAsync(string uri, object value)
+        public async Task<JObject> PutAsync(string request, object value)
         {
-            var response = await Client().PutAsync(EscapeUriRequest(uri), new JsonContent(value));
+            var response = await Client().PutAsync(EscapeRequest(request), new JsonContent(value));
             response.EnsureSuccessStatusCode();
             return GetJson(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task<JObject> PatchAsync(string uri, JObject json)
+        public async Task<JObject> PatchAsync(string request, JObject json)
         {
-            var request = new HttpRequestMessage(new HttpMethod("PATCH"), EscapeUriRequest(uri))
+            var requestMessage = new HttpRequestMessage(new HttpMethod("PATCH"), EscapeRequest(request))
             {
                 Content = new JsonContent(json)
             };
 
-            var response = await Client().SendAsync(request);
+            var response = await Client().SendAsync(requestMessage);
             response.EnsureSuccessStatusCode();
             return GetJson(await response.Content.ReadAsStringAsync());
         }
 
-        public new async Task DeleteAsync(string uri)
+        public new async Task DeleteAsync(string request)
         {
-            var response = await Client().DeleteAsync(EscapeUriRequest(uri));
+            var response = await Client().DeleteAsync(EscapeRequest(request));
             response.EnsureSuccessStatusCode();
         }
     }

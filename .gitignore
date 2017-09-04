@@ -56,3 +56,5 @@ dkms.conf
 /bin/Debug
 /.vs
 /obj/Release
+/bin/Release
+/packages

@@ -12,14 +12,19 @@ namespace Masticore.Net.Http
 {
     public class JsonContent : StringContent
     {
+        [NonSerialized]
+        static string _content;
+
         public JsonContent(object value) :
-            base(JsonConvert.SerializeObject(value,
+            base(_content = JsonConvert.SerializeObject(value,
                 new JsonSerializerSettings()
                 {
                     Formatting = Formatting.Indented,
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 }),
                 Encoding.UTF8, "application/json")
-        { }
+        {
+            System.Diagnostics.Debug.WriteLine(_content);
+        }
     }
 }

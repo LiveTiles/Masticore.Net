@@ -35,7 +35,7 @@ namespace Masticore.Net.Http
             //if (request.Contains(":"))
             //    return Uri.EscapeDataString(request); //HACK: Graph use colon in request path
             //else
-            return Uri.EscapeDataString(request);
+            return Uri.EscapeUriString(request);            
         }
 
         JObject GetJson(string value)
@@ -98,6 +98,7 @@ namespace Masticore.Net.Http
         public new async Task<JObject> PostAsync(string request, HttpContent content)
         {
             var response = await Client().PostAsync(EscapeRequest(request), content);
+            //var x = await response.Content.ReadAsStringAsync();
             response.EnsureSuccessStatusCode();
             return GetJson(await response.Content.ReadAsStringAsync());
         }
@@ -107,6 +108,36 @@ namespace Masticore.Net.Http
             var response = await Client().PostAsync(EscapeRequest(request), null);
             response.EnsureSuccessStatusCode();
             return GetJson(await response.Content.ReadAsStringAsync());
+        }
+
+        public async Task<string> PostAsyncGetString(string request, JObject json)
+        {
+            return await PostAsyncGetString(request, new JsonContent(json));
+        }
+
+        public async Task<string> PostAsyncGetString(string request, object value)
+        {
+            return await PostAsyncGetString(request, new JsonContent(value));
+        }
+
+        public async Task<string> PostAsyncGetString(string request, string text)
+        {
+            return await PostAsyncGetString(request, new StringContent(text));
+        }
+
+        public async Task<string> PostAsyncGetString(string request, HttpContent content)
+        {
+            var response = await Client().PostAsync(EscapeRequest(request), content);
+            //var x = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> PostAsyncGetString(string request)
+        {
+            var response = await Client().PostAsync(EscapeRequest(request), null);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
         }
         #endregion
 

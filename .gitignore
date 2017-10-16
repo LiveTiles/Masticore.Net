@@ -58,3 +58,4 @@ dkms.conf
 /obj/Release
 /bin/Release
 /packages
+/obj/*

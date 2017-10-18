@@ -46,6 +46,11 @@ namespace Masticore.Net.Http
             return await Client().PostAsync(request, json);
         }
 
+        public async Task<JObject> PostAsync(string request, object value)
+        {
+           return await Client().PostAsync(request, new JsonContent(value));
+        }
+
         public async Task<JObject> PostAsync(string request, string text)
         {
             return await Client().PostAsync(request, text);

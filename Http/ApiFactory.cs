@@ -26,7 +26,7 @@ namespace Masticore.Net.Http
             return new ApiClient(BaseAddress + path);   
         }
 
-        public async Task<JObject> GetAsync(string request = "", string query = "")
+        public async Task<JObject> GetAsync(string request = "", params string[] query)
         {
             return await Client().GetAsync(request, query);
         }
@@ -48,7 +48,7 @@ namespace Masticore.Net.Http
 
         public async Task<JObject> PostAsync(string request, object value)
         {
-           return await Client().PostAsync(request, new JsonContent(value));
+            return await Client().PostAsync(request, value);
         }
 
         public async Task<JObject> PostAsync(string request, string text)

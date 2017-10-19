@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 namespace Masticore.Net.Http
 {
     [Serializable]
-    public abstract class ApiFactory
+    public class ApiFactory
     {
         public string BaseAddress;
 
@@ -26,7 +26,7 @@ namespace Masticore.Net.Http
             return new ApiClient(BaseAddress + path);   
         }
 
-        public async Task<JObject> GetAsync(string request = "", params string[] query)
+        public virtual async Task<JObject> GetAsync(string request = "", params string[] query)
         {
             return await Client().GetAsync(request, query);
         }

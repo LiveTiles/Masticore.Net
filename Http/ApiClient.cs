@@ -12,6 +12,9 @@ namespace Masticore.Net.Http
 {
     public class ApiClient : HttpClient
     {
+
+        public ApiClient() { }
+
         public ApiClient(string baseAddress)
         {
             BaseAddress = new Uri(baseAddress);
@@ -29,13 +32,13 @@ namespace Masticore.Net.Http
         //{
         //    return new HttpClient(BaseAddress);
         //}
-        
+
         string EscapeRequest(string request)
         {
             //if (request.Contains(":"))
             //    return Uri.EscapeDataString(request); //HACK: Graph use colon in request path
             //else
-            return Uri.EscapeUriString(request);            
+            return Uri.EscapeUriString(request);
         }
 
         JObject GetJson(string value)
@@ -55,7 +58,7 @@ namespace Masticore.Net.Http
         }
 
         #region Get
-        public async Task<JObject> GetAsync(string request = "", params string[] queryParams)
+        public virtual async Task<JObject> GetAsync(string request = "", params string[] queryParams)
         {
             return GetJson(await GetStringAsync(request, queryParams));
         }
@@ -177,7 +180,7 @@ namespace Masticore.Net.Http
             response.EnsureSuccessStatusCode();
             return GetJson(await response.Content.ReadAsStringAsync());
         }
-                
+
         public async Task<JObject> PatchAsync(string request)
         {
             var requestMessage = new HttpRequestMessage(new HttpMethod("patch"), EscapeRequest(request));

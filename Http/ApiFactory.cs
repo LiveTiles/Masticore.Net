@@ -31,6 +31,11 @@ namespace Masticore.Net.Http
             return await Client().GetAsync(request, query);
         }
 
+        public virtual async Task<JObject> GetAsyncNoEscape(string request = "", params string[] query)
+        {
+            return await Client().GetAsyncNoEscape(request, query);
+        }
+
         public async Task<string> GetStringAsync(string request = "", string query = "")
         {
             return await Client().GetStringAsync(request, query);

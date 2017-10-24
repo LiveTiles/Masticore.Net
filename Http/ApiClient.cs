@@ -63,6 +63,11 @@ namespace Masticore.Net.Http
             return GetJson(await GetStringAsync(request, queryParams));
         }
 
+        public virtual async Task<JObject> GetAsyncNoEscape(string request = "", params string[] queryParams)
+        {
+            return GetJson(await GetStringAsyncNoEscape(request, queryParams));
+        }
+
         public async Task<JArray> GetArrayAsync(string request = "", params string[] queryParams)
         {
             return GetJsonArray(await GetStringAsync(request, queryParams));
@@ -76,6 +81,19 @@ namespace Masticore.Net.Http
                 response = await Client().GetAsync(EscapeRequest(request));
             else
                 response = await Client().GetAsync(EscapeRequest(request) + $"?{query}");
+
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task<string> GetStringAsyncNoEscape(string request = "", params string[] queryParams)
+        {
+            HttpResponseMessage response;
+            var query = string.Join("&", queryParams);
+            if (string.IsNullOrEmpty(query))
+                response = await Client().GetAsync(request);
+            else
+                response = await Client().GetAsync(request + $"?{query}");
 
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();

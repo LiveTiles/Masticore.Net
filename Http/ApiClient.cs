@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Masticore.Net.Http
 {
     public class ApiClient : HttpClient
     {
-
         public ApiClient() { }
 
         public ApiClient(string baseAddress)
@@ -20,24 +15,13 @@ namespace Masticore.Net.Http
             BaseAddress = new Uri(baseAddress);
         }
 
-        //public new string BaseAddress { get; set; }
-
         protected HttpClient Client()
         {
-            //base.BaseAddress = new Uri(BaseAddress);
             return this;
         }
 
-        //public HttpClient Clone()
-        //{
-        //    return new HttpClient(BaseAddress);
-        //}
-
         string EscapeRequest(string request)
         {
-            //if (request.Contains(":"))
-            //    return Uri.EscapeDataString(request); //HACK: Graph use colon in request path
-            //else
             return Uri.EscapeUriString(request);
         }
 
@@ -77,7 +61,16 @@ namespace Masticore.Net.Http
             else
                 response = await Client().GetAsync(EscapeRequest(request) + $"?{query}");
 
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch(HttpRequestException e)
+            {
+                e.Data.Add("HttpStatusCode", response.StatusCode);
+                throw e;
+            }
+            
             return await response.Content.ReadAsStringAsync();
         }
         #endregion
@@ -101,15 +94,34 @@ namespace Masticore.Net.Http
         public new async Task<JObject> PostAsync(string request, HttpContent content)
         {
             var response = await Client().PostAsync(EscapeRequest(request), content);
-            //var x = await response.Content.ReadAsStringAsync();
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                e.Data.Add("HttpStatusCode", response.StatusCode);
+                throw e;
+            }
+
             return GetJson(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<JObject> PostAsync(string request)
         {
             var response = await Client().PostAsync(EscapeRequest(request), null);
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                e.Data.Add("HttpStatusCode", response.StatusCode);
+                throw e;
+            }
+
             return GetJson(await response.Content.ReadAsStringAsync());
         }
 
@@ -131,15 +143,34 @@ namespace Masticore.Net.Http
         public async Task<string> PostAsyncGetString(string request, HttpContent content)
         {
             var response = await Client().PostAsync(EscapeRequest(request), content);
-            //var x = await response.Content.ReadAsStringAsync();
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                e.Data.Add("HttpStatusCode", response.StatusCode);
+                throw e;
+            }
+
             return await response.Content.ReadAsStringAsync();
         }
 
         public async Task<string> PostAsyncGetString(string request)
         {
             var response = await Client().PostAsync(EscapeRequest(request), null);
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                e.Data.Add("HttpStatusCode", response.StatusCode);
+                throw e;
+            }
+
             return await response.Content.ReadAsStringAsync();
         }
         #endregion
@@ -177,7 +208,17 @@ namespace Masticore.Net.Http
             };
 
             var response = await Client().SendAsync(requestMessage);
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                e.Data.Add("HttpStatusCode", response.StatusCode);
+                throw e;
+            }
+
             return GetJson(await response.Content.ReadAsStringAsync());
         }
 
@@ -185,7 +226,17 @@ namespace Masticore.Net.Http
         {
             var requestMessage = new HttpRequestMessage(new HttpMethod("patch"), EscapeRequest(request));
             var response = await Client().SendAsync(requestMessage);
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                e.Data.Add("HttpStatusCode", response.StatusCode);
+                throw e;
+            }
+
             return GetJson(await response.Content.ReadAsStringAsync());
         }
         #endregion
@@ -194,7 +245,17 @@ namespace Masticore.Net.Http
         public new async Task DeleteAsync(string request)
         {
             var response = await Client().DeleteAsync(EscapeRequest(request));
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                e.Data.Add("HttpStatusCode", response.StatusCode);
+                throw e;
+            }
+
         }
         #endregion
     }
